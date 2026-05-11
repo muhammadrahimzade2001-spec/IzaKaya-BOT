@@ -1,7 +1,8 @@
+cat > /home/claude/index.js << 'ENDOFFILE'
 // ╔══════════════════════════════════════════════════╗
 // ║         IzaKaya Discord Bot — index.js           ║
 // ║          🍶 Anime Sohbet Sunucusu Botu           ║
-// ║              by Claude  •  v1.0                  ║
+// ║              by Claude  •  v1.1                  ║
 // ╚══════════════════════════════════════════════════╝
 
 const {
@@ -32,35 +33,33 @@ const PREFIX = '!';
 
 // ─── Renk Paleti (Anime / İzakaya Teması) ────────────────────────────────────
 const COLORS = {
-  SAKURA:   0xFF6B9D,   // Pembe - ana renk
-  INDIGO:   0x4B0082,   // Koyu mor - vurgu
-  KITSUNE:  0xFF8C00,   // Turuncu altın - seviye/XP
-  YUKI:     0xA8D8EA,   // Buz mavisi - bilgi
-  MIDORI:   0x5CB85C,   // Yeşil - başarı
-  AKA:      0xE74C3C,   // Kırmızı - hata/ban
-  NEON:     0x00FFCC,   // Neon turkuaz - eglence
-  MURASAKI: 0x9B59B6,   // Mor - özel
-  YORU:     0x1A1A2E,   // Gece mavisi - koyu arka plan
-  TSUKI:    0xF0E6FF,   // Ay ışığı - açık
+  SAKURA:   0xFF6B9D,
+  INDIGO:   0x4B0082,
+  KITSUNE:  0xFF8C00,
+  YUKI:     0xA8D8EA,
+  MIDORI:   0x5CB85C,
+  AKA:      0xE74C3C,
+  NEON:     0x00FFCC,
+  MURASAKI: 0x9B59B6,
+  YORU:     0x1A1A2E,
+  TSUKI:    0xF0E6FF,
 };
 
 // ─── Anime XP Unvanları ───────────────────────────────────────────────────────
 const UNVANLAR = [
-  { min: 1,  unvan: '🌸 Genin',          emoji: '🌸' },
-  { min: 5,  unvan: '⚔️ Chuunin',        emoji: '⚔️' },
-  { min: 10, unvan: '🔥 Jounin',          emoji: '🔥' },
-  { min: 20, unvan: '💫 ANBU',            emoji: '💫' },
-  { min: 35, unvan: '🌟 Kage',            emoji: '🌟' },
-  { min: 50, unvan: '⚡ Hokage',          emoji: '⚡' },
-  { min: 75, unvan: '🏯 Efsane Ninja',    emoji: '🏯' },
+  { min: 1,   unvan: '🌸 Genin',         emoji: '🌸' },
+  { min: 5,   unvan: '⚔️ Chuunin',       emoji: '⚔️' },
+  { min: 10,  unvan: '🔥 Jounin',         emoji: '🔥' },
+  { min: 20,  unvan: '💫 ANBU',           emoji: '💫' },
+  { min: 35,  unvan: '🌟 Kage',           emoji: '🌟' },
+  { min: 50,  unvan: '⚡ Hokage',         emoji: '⚡' },
+  { min: 75,  unvan: '🏯 Efsane Ninja',   emoji: '🏯' },
   { min: 100, unvan: '🐉 Ejderha Lordu',  emoji: '🐉' },
 ];
 
 function getUnvan(level) {
   let current = UNVANLAR[0];
-  for (const u of UNVANLAR) {
-    if (level >= u.min) current = u;
-  }
+  for (const u of UNVANLAR) { if (level >= u.min) current = u; }
   return current;
 }
 
@@ -81,18 +80,18 @@ function addXP(id, amount) {
   return false;
 }
 
-// ─── Cooldown (XP spam önlemi) ────────────────────────────────────────────────
+// ─── Cooldown ────────────────────────────────────────────────────────────────
 const xpCooldown = new Map();
 
 // ─── Ticket Kategorileri ──────────────────────────────────────────────────────
 const TICKET_KATEGORILER = {
-  'genel_sohbet':   { label: '💬 Genel Yardım',       renk: COLORS.YUKI    },
-  'anime_oneri':    { label: '🎌 Anime Önerisi',       renk: COLORS.SAKURA  },
-  'sikayet':        { label: '🚨 Şikayet',             renk: COLORS.AKA     },
-  'ortak_izleme':   { label: '🎬 Ortak İzleme Talebi', renk: COLORS.MURASAKI},
-  'yetkili_basvuru':{ label: '🛡️ Yetkili Başvurusu',   renk: COLORS.KITSUNE },
-  'bug_report':     { label: '🐛 Hata Bildirimi',      renk: COLORS.NEON    },
-  'oneri':          { label: '✨ Sunucu Önerisi',       renk: COLORS.MIDORI  },
+  'genel_sohbet':    { label: '💬 Genel Yardım',       renk: COLORS.YUKI     },
+  'anime_oneri':     { label: '🎌 Anime Önerisi',       renk: COLORS.SAKURA   },
+  'sikayet':         { label: '🚨 Şikayet',             renk: COLORS.AKA      },
+  'ortak_izleme':    { label: '🎬 Ortak İzleme Talebi', renk: COLORS.MURASAKI },
+  'yetkili_basvuru': { label: '🛡️ Yetkili Başvurusu',   renk: COLORS.KITSUNE  },
+  'bug_report':      { label: '🐛 Hata Bildirimi',      renk: COLORS.NEON     },
+  'oneri':           { label: '✨ Sunucu Önerisi',       renk: COLORS.MIDORI   },
 };
 
 const TICKET_ACIKLAMALAR = {
@@ -117,8 +116,94 @@ const TICKET_ACIKLAMALAR = {
     '✨ **Sunucu Önerisi**\n\nÖnerini detaylıca anlat!\nNeden bu önerinin sunucuya katkısı olacağını da açıkla.',
 };
 
-// Açık ticketleri takip et
 const acikTicketler = new Map();
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PARTNERLİK SİSTEMİ
+// ══════════════════════════════════════════════════════════════════════════════
+const PARTNER_ROL_ID   = '1500781578450899076';
+const PARTNER_KANAL_ID = '1499014083196751912';
+const partnerData      = new Map(); // userId → [{ id, sunucuAdi, link, not, tarih }]
+let   partnerSayac     = 1;
+
+function getPartnerKayitlari(userId) {
+  if (!partnerData.has(userId)) partnerData.set(userId, []);
+  return partnerData.get(userId);
+}
+
+function periyotSay(userId, ms) {
+  const simdi = Date.now();
+  return getPartnerKayitlari(userId).filter(k => simdi - k.tarih <= ms).length;
+}
+
+function bugun(userId)  { return periyotSay(userId, 86400000);   }
+function buHafta(userId){ return periyotSay(userId, 604800000);  }
+function buAy(userId)   { return periyotSay(userId, 2592000000); }
+
+function partnerIstatistikEmbed(userId, tag, avatarURL) {
+  const toplam  = getPartnerKayitlari(userId).length;
+  const gun     = bugun(userId);
+  const hafta   = buHafta(userId);
+  const ay      = buAy(userId);
+  const barDolu = Math.min(Math.floor((gun / 5) * 10), 10);
+  const bar     = '▰'.repeat(barDolu) + '▱'.repeat(10 - barDolu);
+
+  // Milestone kontrol
+  let milestone = '';
+  if (toplam === 10)  milestone = '\n\n🎉 **10. Partnerlik Milestone!** Tebrikler!';
+  if (toplam === 25)  milestone = '\n\n🌟 **25. Partnerlik Milestone!** İnanılmaz!';
+  if (toplam === 50)  milestone = '\n\n⚡ **50. Partnerlik Milestone!** Efsane!';
+  if (toplam === 100) milestone = '\n\n🐉 **100. Partnerlik Milestone!** Ejderha Lordu!';
+
+  return new EmbedBuilder()
+    .setTitle('🤝  Partnerlik İstatistiği')
+    .setDescription(`**${tag}** için partnerlik özeti${milestone}`)
+    .setThumbnail(avatarURL)
+    .addFields(
+      { name: '📅 Bugün',        value: `**${gun}** partnerlik`,   inline: true },
+      { name: '📆 Bu Hafta',     value: `**${hafta}** partnerlik`, inline: true },
+      { name: '🗓️ Bu Ay',        value: `**${ay}** partnerlik`,    inline: true },
+      { name: '🏆 Toplam',       value: `**${toplam}** partnerlik`,inline: true },
+      { name: '📊 Günlük Hedef (5)', value: `\`[${bar}]\` ${gun}/5`, inline: false },
+    )
+    .setColor(COLORS.MIDORI)
+    .setFooter({ text: '🍶 IzaKaya • Partner Sistemi' })
+    .setTimestamp();
+}
+
+// Haftalık otomatik özet (her Pazartesi 09:00)
+function haftalikOzetBaşlat() {
+  setInterval(() => {
+    const simdi = new Date();
+    if (simdi.getDay() !== 1 || simdi.getHours() !== 9 || simdi.getMinutes() !== 0) return;
+
+    const kanal = client.channels.cache.get(PARTNER_KANAL_ID);
+    if (!kanal) return;
+
+    const sorted = [...partnerData.entries()]
+      .map(([uid, k]) => ({ uid, hafta: periyotSay(uid, 604800000), toplam: k.length }))
+      .filter(x => x.hafta > 0)
+      .sort((a, b) => b.hafta - a.hafta);
+
+    if (!sorted.length) return;
+
+    const medals = ['🥇','🥈','🥉'];
+    const desc = sorted.slice(0, 10)
+      .map((x, i) => `${medals[i] ?? `**${i+1}.**`} <@${x.uid}> — **${x.hafta}** partnerlik`)
+      .join('\n');
+
+    kanal.send({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle('📊  Haftalık Partnerlik Özeti')
+          .setDescription(`Bu haftanın en aktif partner yetkilileri:\n\n${desc}`)
+          .setColor(COLORS.KITSUNE)
+          .setFooter({ text: '🍶 IzaKaya • Haftalık Partner Raporu' })
+          .setTimestamp(),
+      ],
+    }).catch(() => {});
+  }, 60000);
+}
 
 // ─── Embed Yardımcıları ───────────────────────────────────────────────────────
 function embed(baslik, aciklama, renk = COLORS.SAKURA) {
@@ -148,7 +233,7 @@ function basari(msg) {
     .setTimestamp();
 }
 
-// ─── Rastgele Anime Gifs (seviye atlama için) ─────────────────────────────────
+// ─── Kutlama Mesajları ────────────────────────────────────────────────────────
 const KUTLAMA_MESAJLARI = [
   '**Nakama!** Seviye atladın! 🎉',
   '**Sugoi!** Yeni seviyeye ulaştın! ✨',
@@ -166,6 +251,7 @@ client.once('ready', () => {
   console.log(`║  Kullanici: ${client.user.tag.padEnd(24)}║`);
   console.log(`╚══════════════════════════════════════╝\n`);
   client.user.setActivity('🎌 IzaKaya | !yardim', { type: 0 });
+  haftalikOzetBaşlat();
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -174,14 +260,14 @@ client.once('ready', () => {
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
-  // ── Pasif XP (cooldown ile) ───────────────────────────────────────────────
+  // ── Pasif XP ─────────────────────────────────────────────────────────────
   if (!message.content.startsWith(PREFIX)) {
     const now = Date.now();
     const lastMsg = xpCooldown.get(message.author.id) || 0;
-    if (now - lastMsg < 20000) return; // 20 saniye cooldown
+    if (now - lastMsg < 20000) return;
     xpCooldown.set(message.author.id, now);
 
-    const kazanilanXP = Math.floor(Math.random() * 8) + 3; // 3-10 XP
+    const kazanilanXP = Math.floor(Math.random() * 8) + 3;
     const leveled = addXP(message.author.id, kazanilanXP);
 
     if (leveled) {
@@ -232,9 +318,9 @@ client.on('messageCreate', async (message) => {
             { name: '👥 Üye Sayısı',  value: `${g.memberCount}`,                              inline: true },
             { name: '📅 Kuruluş',     value: `<t:${Math.floor(g.createdTimestamp / 1000)}:D>`, inline: true },
             { name: '👑 Sahip',       value: `<@${g.ownerId}>`,                                inline: true },
-            { name: '📢 Kanal',       value: `${g.channels.cache.size}`,                      inline: true },
-            { name: '🎭 Rol',         value: `${g.roles.cache.size}`,                         inline: true },
-            { name: '😀 Emoji',       value: `${g.emojis.cache.size}`,                        inline: true },
+            { name: '📢 Kanal',       value: `${g.channels.cache.size}`,                       inline: true },
+            { name: '🎭 Rol',         value: `${g.roles.cache.size}`,                          inline: true },
+            { name: '😀 Emoji',       value: `${g.emojis.cache.size}`,                         inline: true },
           )
           .setColor(COLORS.SAKURA)
           .setFooter({ text: '🍶 IzaKaya • Anime Sohbet Sunucusu' })
@@ -367,9 +453,9 @@ client.on('messageCreate', async (message) => {
           .setDescription(metin)
           .setColor(duyuruRenk)
           .addFields(
-            { name: '👤 Duyuran', value: `${message.author}`,                       inline: true },
-            { name: '📋 Tip',     value: tip,                                        inline: true },
-            { name: '📅 Tarih',   value: `<t:${Math.floor(Date.now() / 1000)}:F>`,  inline: true },
+            { name: '👤 Duyuran', value: `${message.author}`,                      inline: true },
+            { name: '📋 Tip',     value: tip,                                       inline: true },
+            { name: '📅 Tarih',   value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true },
           )
           .setFooter({ text: `🍶 IzaKaya • ${tip} Duyuru` })
           .setTimestamp(),
@@ -544,10 +630,10 @@ client.on('messageCreate', async (message) => {
           .setTitle(`${unvan.emoji}  ${hedef.username} — Profil`)
           .setThumbnail(hedef.displayAvatarURL({ dynamic: true }))
           .addFields(
-            { name: '🏅 Seviye',          value: `**${u.level}**`,          inline: true },
-            { name: `${unvan.emoji} Unvan`, value: unvan.unvan,              inline: true },
-            { name: '💬 Mesaj Sayısı',    value: `${u.mesajSayisi || 0}`,   inline: true },
-            { name: '✨ XP Barı',         value: `\`[${bar}]\` ${u.xp}/${needed}`, inline: false },
+            { name: '🏅 Seviye',            value: `**${u.level}**`,        inline: true },
+            { name: `${unvan.emoji} Unvan`, value: unvan.unvan,             inline: true },
+            { name: '💬 Mesaj Sayısı',      value: `${u.mesajSayisi || 0}`, inline: true },
+            { name: '✨ XP Barı',           value: `\`[${bar}]\` ${u.xp}/${needed}`, inline: false },
           )
           .setColor(COLORS.SAKURA)
           .setFooter({ text: '🍶 IzaKaya • Profil Sistemi' })
@@ -562,7 +648,7 @@ client.on('messageCreate', async (message) => {
       .slice(0, 10);
     if (!sorted.length) return message.reply({ embeds: [hata('Henüz XP kazanmış kimse yok!')] });
     const medals = ['🥇', '🥈', '🥉'];
-    const desc   = sorted
+    const desc = sorted
       .map(([id, u], i) => {
         const unvan = getUnvan(u.level);
         return `${medals[i] ?? `**${i + 1}.**`} <@${id}> — ${unvan.emoji} Seviye **${u.level}** (\`${u.xp} XP\`)`;
@@ -602,21 +688,16 @@ client.on('messageCreate', async (message) => {
   }
 
   // ══════════════════════════════════════════════════════════════════════════
-  //  ANİME KOMUTLARI (Özel)
+  //  ANİME KOMUTLARI
   // ══════════════════════════════════════════════════════════════════════════
 
   if (komut === 'waifu') {
     const waifular = [
-      'Zero Two (Darling in the FranXX) 💖',
-      'Rem (Re:Zero) 💙',
-      'Asuna (Sword Art Online) ⚔️',
-      'Nezuko (Demon Slayer) 🌸',
-      'Mikasa (Attack on Titan) 💪',
-      'Hinata (Naruto) 🌺',
-      'Erza (Fairy Tail) 🔴',
-      'Violet (Violet Evergarden) 💜',
-      'Miku (Quintessential Quintuplets) 🎵',
-      'Yor (Spy x Family) 🌹',
+      'Zero Two (Darling in the FranXX) 💖', 'Rem (Re:Zero) 💙',
+      'Asuna (Sword Art Online) ⚔️',         'Nezuko (Demon Slayer) 🌸',
+      'Mikasa (Attack on Titan) 💪',          'Hinata (Naruto) 🌺',
+      'Erza (Fairy Tail) 🔴',                 'Violet (Violet Evergarden) 💜',
+      'Miku (Quintessential Quintuplets) 🎵', 'Yor (Spy x Family) 🌹',
     ];
     const secilen = waifular[Math.floor(Math.random() * waifular.length)];
     return message.reply({ embeds: [embed('💝  Günün Waifusu', `${message.author.username}'nin günün waifusu:\n\n**${secilen}**`, COLORS.SAKURA)] });
@@ -624,16 +705,11 @@ client.on('messageCreate', async (message) => {
 
   if (komut === 'husbando') {
     const husbanolar = [
-      'Levi Ackerman (Attack on Titan) ⚔️',
-      'Itachi Uchiha (Naruto) 👁️',
-      'Gojo Satoru (Jujutsu Kaisen) 🌟',
-      'Roronoa Zoro (One Piece) 🗡️',
-      'Edward Elric (Fullmetal Alchemist) ✨',
-      'Killua (Hunter x Hunter) ⚡',
-      'Todoroki (My Hero Academia) 🔥❄️',
-      'Yato (Noragami) 💙',
-      'Kirito (Sword Art Online) ⚫',
-      'Spike Spiegel (Cowboy Bebop) 🚀',
+      'Levi Ackerman (Attack on Titan) ⚔️',   'Itachi Uchiha (Naruto) 👁️',
+      'Gojo Satoru (Jujutsu Kaisen) 🌟',       'Roronoa Zoro (One Piece) 🗡️',
+      'Edward Elric (Fullmetal Alchemist) ✨',  'Killua (Hunter x Hunter) ⚡',
+      'Todoroki (My Hero Academia) 🔥❄️',       'Yato (Noragami) 💙',
+      'Kirito (Sword Art Online) ⚫',           'Spike Spiegel (Cowboy Bebop) 🚀',
     ];
     const secilen = husbanolar[Math.floor(Math.random() * husbanolar.length)];
     return message.reply({ embeds: [embed('💙  Günün Husbandosu', `${message.author.username}'nin günün husbandosu:\n\n**${secilen}**`, COLORS.INDIGO)] });
@@ -652,6 +728,194 @@ client.on('messageCreate', async (message) => {
           )
           .setColor(COLORS.SAKURA)
           .setFooter({ text: '🍶 IzaKaya' })
+          .setTimestamp(),
+      ],
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  PARTNERLİK KOMUTLARI
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // Yetki kontrolü yardımcısı
+  function partnerYetkiKontrol(member) {
+    return (
+      member.roles.cache.has(PARTNER_ROL_ID) ||
+      member.permissions.has(PermissionFlagsBits.Administrator)
+    );
+  }
+
+  // !partner-ekle @sunucu_sahibi <sunucu_adı> [link] [not]
+  if (komut === 'partner-ekle') {
+    if (!partnerYetkiKontrol(message.member))
+      return message.reply({ embeds: [hata('Bu komutu kullanmak için **Partner Yetkilisi** rolüne ihtiyacın var!')] });
+
+    const sunucuAdi = args[0];
+    const link      = args[1] || '-';
+    const not       = args.slice(2).join(' ') || '-';
+
+    if (!sunucuAdi)
+      return message.reply({ embeds: [hata('`!partner-ekle <sunucu_adı> [davet_linki] [not]`')] });
+
+    const kayit = {
+      id:         partnerSayac++,
+      sunucuAdi,
+      link,
+      not,
+      tarih:      Date.now(),
+      ekleyen:    message.author.id,
+    };
+
+    getPartnerKayitlari(message.author.id).push(kayit);
+
+    // XP ver (her partnerlik = 25 XP)
+    addXP(message.author.id, 25);
+
+    // Partner kanalına log gönder
+    const partnerKanal = message.guild.channels.cache.get(PARTNER_KANAL_ID);
+    if (partnerKanal) {
+      partnerKanal.send({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle('🤝  Yeni Partnerlik Kaydedildi!')
+            .addFields(
+              { name: '🏠 Sunucu',      value: sunucuAdi,                               inline: true  },
+              { name: '🔗 Link',        value: link,                                    inline: true  },
+              { name: '👤 Yetkili',     value: `${message.author}`,                     inline: true  },
+              { name: '📝 Not',         value: not,                                     inline: false },
+              { name: '🆔 Kayıt No',   value: `#${kayit.id}`,                          inline: true  },
+              { name: '📅 Tarih',       value: `<t:${Math.floor(Date.now()/1000)}:F>`,  inline: true  },
+            )
+            .setColor(COLORS.MIDORI)
+            .setFooter({ text: '🍶 IzaKaya • Partner Sistemi' })
+            .setTimestamp(),
+        ],
+      }).catch(() => {});
+    }
+
+    // Anlık istatistik yanıtı
+    return message.reply({
+      embeds: [
+        partnerIstatistikEmbed(
+          message.author.id,
+          message.author.tag,
+          message.author.displayAvatarURL({ dynamic: true })
+        ),
+      ],
+    });
+  }
+
+  // !partner-istatistik [@kullanici]
+  if (komut === 'partner-istatistik' || komut === 'partner-stat') {
+    if (!partnerYetkiKontrol(message.member))
+      return message.reply({ embeds: [hata('Bu komutu kullanmak için **Partner Yetkilisi** rolüne ihtiyacın var!')] });
+
+    const hedef = message.mentions.users.first() || message.author;
+
+    return message.reply({
+      embeds: [
+        partnerIstatistikEmbed(
+          hedef.id,
+          hedef.tag,
+          hedef.displayAvatarURL({ dynamic: true })
+        ),
+      ],
+    });
+  }
+
+  // !partner-liste
+  if (komut === 'partner-liste') {
+    if (!partnerYetkiKontrol(message.member))
+      return message.reply({ embeds: [hata('Bu komutu kullanmak için **Partner Yetkilisi** rolüne ihtiyacın var!')] });
+
+    const hedef   = message.mentions.users.first() || message.author;
+    const kayitlar = getPartnerKayitlari(hedef.id);
+
+    if (!kayitlar.length)
+      return message.reply({ embeds: [hata(`**${hedef.username}**'in hiç partnerlik kaydı yok.`)] });
+
+    const desc = kayitlar.slice(-15) // Son 15
+      .reverse()
+      .map(k =>
+        `**#${k.id}** — \`${k.sunucuAdi}\` | 🔗 ${k.link} | <t:${Math.floor(k.tarih/1000)}:d>`
+      )
+      .join('\n');
+
+    return message.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle(`📋  ${hedef.username} — Partnerlik Listesi`)
+          .setDescription(desc)
+          .addFields({ name: '🏆 Toplam', value: `${kayitlar.length} kayıt`, inline: true })
+          .setColor(COLORS.YUKI)
+          .setFooter({ text: '🍶 IzaKaya • Son 15 kayıt gösteriliyor' })
+          .setTimestamp(),
+      ],
+    });
+  }
+
+  // !partner-sil <id>
+  if (komut === 'partner-sil') {
+    if (!message.member.permissions.has(PermissionFlagsBits.Administrator))
+      return message.reply({ embeds: [hata('Sadece adminler kayıt silebilir!')] });
+
+    const silId = parseInt(args[0]);
+    if (isNaN(silId)) return message.reply({ embeds: [hata('`!partner-sil <kayıt_id>`')] });
+
+    let silindi = false;
+    for (const [uid, kayitlar] of partnerData.entries()) {
+      const idx = kayitlar.findIndex(k => k.id === silId);
+      if (idx !== -1) {
+        kayitlar.splice(idx, 1);
+        silindi = true;
+        break;
+      }
+    }
+
+    return message.reply({
+      embeds: [silindi
+        ? basari(`**#${silId}** numaralı partnerlik kaydı silindi.`)
+        : hata(`**#${silId}** numaralı kayıt bulunamadı.`)
+      ],
+    });
+  }
+
+  // !partner-lb  (leaderboard)
+  if (komut === 'partner-lb' || komut === 'partner-siralama') {
+    if (!partnerYetkiKontrol(message.member))
+      return message.reply({ embeds: [hata('Bu komutu kullanmak için **Partner Yetkilisi** rolüne ihtiyacın var!')] });
+
+    const sorted = [...partnerData.entries()]
+      .map(([uid, k]) => ({
+        uid,
+        toplam: k.length,
+        bugun:  bugun(uid),
+        hafta:  buHafta(uid),
+        ay:     buAy(uid),
+      }))
+      .filter(x => x.toplam > 0)
+      .sort((a, b) => b.toplam - a.toplam)
+      .slice(0, 10);
+
+    if (!sorted.length)
+      return message.reply({ embeds: [hata('Henüz hiç partnerlik kaydı yok!')] });
+
+    const medals = ['🥇','🥈','🥉'];
+    const desc = sorted
+      .map((x, i) =>
+        `${medals[i] ?? `**${i+1}.**`} <@${x.uid}>\n` +
+        `┣ 📅 Bugün: **${x.bugun}** | 📆 Hafta: **${x.hafta}** | 🗓️ Ay: **${x.ay}**\n` +
+        `┗ 🏆 Toplam: **${x.toplam}** partnerlik`
+      )
+      .join('\n\n');
+
+    return message.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle('🤝  Partnerlik Sıralaması')
+          .setDescription(desc)
+          .setColor(COLORS.KITSUNE)
+          .setFooter({ text: '🍶 IzaKaya • Partner Leaderboard' })
           .setTimestamp(),
       ],
     });
@@ -775,6 +1039,15 @@ client.on('messageCreate', async (message) => {
                 '`!duyuru -anime <metin>` — Anime duyurusu 🎌',
             },
             {
+              name: '🤝 Partnerlik',
+              value:
+                '`!partner-ekle <sunucu> [link] [not]` — Kayıt ekle\n' +
+                '`!partner-istatistik [@yetkili]` — İstatistik gör\n' +
+                '`!partner-liste [@yetkili]` — Geçmiş kayıtlar\n' +
+                '`!partner-lb` — Liderlik tablosu\n' +
+                '`!partner-sil <id>` — Kayıt sil (Admin)',
+            },
+            {
               name: '🎫 Ticket Sistemi',
               value:
                 '`!ticket-kur` — Paneli kur (Admin)\n' +
@@ -797,7 +1070,7 @@ client.on('messageCreate', async (message) => {
               value: '`!zar [yüz]` `!yazi-tura` `!8top <soru>`',
             },
           )
-          .setFooter({ text: '🍶 IzaKaya • Prefix: ! • Iyi sohbetler!' })
+          .setFooter({ text: '🍶 IzaKaya • Prefix: ! • İyi sohbetler!' })
           .setTimestamp(),
       ],
     });
@@ -809,7 +1082,6 @@ client.on('messageCreate', async (message) => {
 // ══════════════════════════════════════════════════════════════════════════════
 client.on('interactionCreate', async (interaction) => {
 
-  // ── Dropdown Menü: Kategori Seç ───────────────────────────────────────────
   if (interaction.isStringSelectMenu() && interaction.customId === 'ticket_kategori_sec') {
     await interaction.deferReply({ ephemeral: true });
 
@@ -817,13 +1089,11 @@ client.on('interactionCreate', async (interaction) => {
     const kategori = TICKET_KATEGORILER[secilen];
     const kanalAdi = `🎫-${secilen.replace(/_/g, '-')}-${interaction.user.id}`;
 
-    // Zaten açık ticket var mı?
     const mevcutKanal = interaction.guild.channels.cache.find(c => c.name === kanalAdi);
     if (mevcutKanal) {
       return interaction.editReply({ content: `❌ Bu kategoride zaten açık bir ticketin var: ${mevcutKanal}` });
     }
 
-    // Admin rolü bul
     const adminRol = interaction.guild.roles.cache.find(
       r => r.permissions.has(PermissionFlagsBits.Administrator) && !r.managed
     );
@@ -851,16 +1121,9 @@ client.on('interactionCreate', async (interaction) => {
 
     acikTicketler.set(kanal.id, { userId: interaction.user.id, kategori: secilen });
 
-    // Ticket içi butonlar
     const butonRow = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId('ticket_kapat')
-        .setLabel('🔒 Ticketi Kapat')
-        .setStyle(ButtonStyle.Danger),
-      new ButtonBuilder()
-        .setCustomId('ticket_sahiplen')
-        .setLabel('✋ Sahiplen')
-        .setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('ticket_kapat').setLabel('🔒 Ticketi Kapat').setStyle(ButtonStyle.Danger),
+      new ButtonBuilder().setCustomId('ticket_sahiplen').setLabel('✋ Sahiplen').setStyle(ButtonStyle.Secondary),
     );
 
     await kanal.send({
@@ -870,10 +1133,10 @@ client.on('interactionCreate', async (interaction) => {
           .setTitle(`${kategori.label} — Ticket Açıldı`)
           .setDescription(TICKET_ACIKLAMALAR[secilen])
           .addFields(
-            { name: '👤 Kullanıcı', value: `${interaction.user}`,                       inline: true },
-            { name: '🏷️ Tag',       value: interaction.user.tag,                         inline: true },
-            { name: '🆔 ID',        value: interaction.user.id,                          inline: true },
-            { name: '📅 Açılış',    value: `<t:${Math.floor(Date.now() / 1000)}:F>`,    inline: false },
+            { name: '👤 Kullanıcı', value: `${interaction.user}`,                    inline: true  },
+            { name: '🏷️ Tag',       value: interaction.user.tag,                      inline: true  },
+            { name: '🆔 ID',        value: interaction.user.id,                       inline: true  },
+            { name: '📅 Açılış',    value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false },
           )
           .setColor(kategori.renk)
           .setFooter({ text: '🍶 IzaKaya • Ticket Sistemi | Sahiplenmek için butona bas' })
@@ -882,22 +1145,18 @@ client.on('interactionCreate', async (interaction) => {
       components: [butonRow],
     });
 
-    return interaction.editReply({
-      content: `✅ Ticketin açıldı: ${kanal}\nKategori: **${kategori.label}**`,
-    });
+    return interaction.editReply({ content: `✅ Ticketin açıldı: ${kanal}\nKategori: **${kategori.label}**` });
   }
 
   if (!interaction.isButton()) return;
 
-  // ── Ticket Kapat ──────────────────────────────────────────────────────────
   if (interaction.customId === 'ticket_kapat') {
     const ticketBilgi = acikTicketler.get(interaction.channel.id);
     const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.ManageChannels);
     const isSahip = ticketBilgi && interaction.user.id === ticketBilgi.userId;
 
-    if (!isAdmin && !isSahip) {
+    if (!isAdmin && !isSahip)
       return interaction.reply({ content: '❌ Bu ticketi kapatma yetkin yok!', ephemeral: true });
-    }
 
     await interaction.reply({
       embeds: [
@@ -911,11 +1170,10 @@ client.on('interactionCreate', async (interaction) => {
     setTimeout(() => interaction.channel.delete().catch(() => {}), 5000);
   }
 
-  // ── Ticket Sahiplen ───────────────────────────────────────────────────────
   if (interaction.customId === 'ticket_sahiplen') {
-    if (!interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.ManageMessages))
       return interaction.reply({ content: '❌ Yetkin yok!', ephemeral: true });
-    }
+
     await interaction.reply({
       embeds: [
         new EmbedBuilder()
@@ -930,9 +1188,9 @@ client.on('interactionCreate', async (interaction) => {
 //  YENİ ÜYE KARŞILAMA
 // ══════════════════════════════════════════════════════════════════════════════
 client.on('guildMemberAdd', async (member) => {
-  // Karşılama kanalını bul (genel, karşılama veya welcome adlı kanal)
   const karsilamaKanal = member.guild.channels.cache.find(
-    c => c.name.includes('genel') || c.name.includes('karsilama') || c.name.includes('welcome') || c.name.includes('hoşgeldin')
+    c => c.name.includes('genel') || c.name.includes('karsilama') ||
+         c.name.includes('welcome') || c.name.includes('hoşgeldin')
   );
   if (!karsilamaKanal) return;
 
@@ -950,7 +1208,7 @@ client.on('guildMemberAdd', async (member) => {
         .setTitle('🌸  Yeni Nakama!')
         .setDescription(mesaj)
         .addFields(
-          { name: '👤 Kullanıcı', value: `${member}`, inline: true },
+          { name: '👤 Kullanıcı', value: `${member}`,                    inline: true },
           { name: '👥 Üye No',    value: `${member.guild.memberCount}. üye`, inline: true },
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
@@ -965,3 +1223,4 @@ client.on('guildMemberAdd', async (member) => {
 //  LOGIN
 // ══════════════════════════════════════════════════════════════════════════════
 client.login(process.env.TOKEN || process.env.BOT_TOKEN);
+ENDOFFILE
